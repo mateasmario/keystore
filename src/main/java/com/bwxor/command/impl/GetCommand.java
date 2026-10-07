@@ -6,7 +6,6 @@ import com.bwxor.exception.FileServiceException;
 import com.bwxor.service.FileService;
 
 import java.util.List;
-import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class GetCommand implements Command {
@@ -29,14 +28,13 @@ public class GetCommand implements Command {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
         displayFunction.accept("Please enter your password:");
-        String password = scanner.nextLine();
+        char[] password = System.console().readPassword();
 
         List<Secret> secrets;
 
         try {
-            secrets = fileService.getSecrets(password);
+            secrets = fileService.getSecrets(new String(password));
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read secrets from the file.");
             return;

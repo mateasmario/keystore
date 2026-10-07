@@ -26,14 +26,13 @@ public class AddCommand implements Command {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
         displayFunction.accept("Please enter your password:");
-        String password = scanner.nextLine();
+        char[] password = System.console().readPassword();
 
         List<Secret> secrets;
 
         try {
-            secrets = fileService.getSecrets(password);
+            secrets = fileService.getSecrets(new String(password));
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read secrets from the file.");
             return;
@@ -49,7 +48,7 @@ public class AddCommand implements Command {
         newSecrets.add(new Secret(args.get(0), args.get(1)));
 
         try {
-            fileService.createSecretsFile(password, newSecrets);
+            fileService.createSecretsFile(new String(password), newSecrets);
         } catch (FileServiceException e) {
             displayFunction.accept("Error while (re-)creating the keystore file.");
         }
