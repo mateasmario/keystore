@@ -5,10 +5,7 @@ import com.bwxor.entity.Secret;
 import com.bwxor.exception.FileServiceException;
 import com.bwxor.service.FileService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class AddCommand implements Command {
@@ -46,10 +43,12 @@ public class AddCommand implements Command {
             return;
         }
 
-        secrets.add(new Secret(args.get(0), args.get(1)));
+        List<Secret> newSecrets = new ArrayList<>();
+        newSecrets.addAll(secrets);
+        newSecrets.add(new Secret(args.get(0), args.get(1)));
 
         try {
-            fileService.createSecretsFile(password, secrets);
+            fileService.createSecretsFile(password, newSecrets);
         } catch (FileServiceException e) {
             displayFunction.accept("Error while (re-)creating the keystore file.");
         }

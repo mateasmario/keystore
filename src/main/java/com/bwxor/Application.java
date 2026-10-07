@@ -18,6 +18,7 @@ public class Application {
         commandDispatcher.register("add", new AddCommand(fileService));
         commandDispatcher.register("get", new GetCommand(fileService));
         commandDispatcher.register("remove", new RemoveCommand(fileService));
+        commandDispatcher.register("delete-file", new DeleteFileCommand(fileService));
 
         commandDispatcher.execute(List.of(args), System.out::println);
     }

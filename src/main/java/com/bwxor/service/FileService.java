@@ -110,4 +110,12 @@ public class FileService {
 
         return output;
     }
+
+    public void deleteFile() throws FileServiceException {
+        try {
+            Files.deleteIfExists(SECRETS_FILE_PATH);
+        } catch (IOException e) {
+            throw new FileServiceException(e);
+        }
+    }
 }

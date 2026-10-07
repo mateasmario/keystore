@@ -5,6 +5,7 @@ import com.bwxor.entity.Secret;
 import com.bwxor.exception.FileServiceException;
 import com.bwxor.service.FileService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -44,15 +45,18 @@ public class RemoveCommand implements Command {
 
         var keyOptional = secrets.stream().filter(e -> e.key().equals(args.get(0))).findAny();
 
+        List<Secret> newSecrets = new ArrayList<>();
+        newSecrets.addAll(secrets);
+
         if (keyOptional.isPresent()) {
-            secrets.remove(keyOptional.get());
+            newSecrets.remove(keyOptional.get());
             displayFunction.accept("Key " + keyOptional.get().key() + " has been removed from the keystore.");
         } else {
             displayFunction.accept("Key does not exist in the keystore.");
         }
 
         try {
-            fileService.createSecretsFile(password, secrets);
+            fileService.createSecretsFile(password, newSecrets);
         } catch (FileServiceException e) {
             displayFunction.accept("Error while (re-)creating the keystore file.");
         }
