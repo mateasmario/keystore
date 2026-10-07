@@ -28,8 +28,7 @@ public class GetCommand implements Command {
             return;
         }
 
-        displayFunction.accept("Please enter your password:");
-        char[] password = System.console().readPassword();
+        char[] password = System.console().readPassword("Password: ");
 
         List<Secret> secrets;
 
