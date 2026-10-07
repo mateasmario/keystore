@@ -2,13 +2,6 @@
 
 A command-line application for securely storing and managing key-value pairs with password protection. The keystore encrypts all stored secrets and stores them in a file that can only be accessed with the correct password.
 
-## Features
-
-- **Secure Storage**: Store sensitive key-value pairs encrypted with a password
-- **Password Protected**: All data is encrypted with a user-provided password
-- **Simple CLI**: Easy-to-use command-line interface for managing secrets
-- **Cross-Platform**: Built with Java for platform independence
-
 ## Installation
 
 ### Prerequisites
