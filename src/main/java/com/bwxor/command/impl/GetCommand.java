@@ -26,6 +26,7 @@ public class GetCommand implements Command {
     public void execute(List<String> args, Consumer<String> displayFunction) {
         if (args.size() != 1) {
             displayFunction.accept(USAGE_MESSAGE);
+            return;
         }
 
         Scanner scanner = new Scanner(System.in);
