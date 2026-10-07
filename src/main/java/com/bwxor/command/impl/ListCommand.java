@@ -29,21 +29,19 @@ public class ListCommand implements Command {
 
     @Override
     public void execute(List<String> args, Consumer<String> displayFunction) {
-        Scanner scanner = new Scanner(System.in);
-        displayFunction.accept("Please enter your password:");
-        String password = scanner.nextLine();
+        char[] password = System.console().readPassword("Password: ");
 
         List<Secret> secrets;
 
         try {
-            secrets = fileService.getSecrets(password);
+            secrets = fileService.getSecrets(new String(password));
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read secrets from the file.");
             return;
         }
 
         for (Secret s : secrets) {
-            displayFunction.accept(s.key() + ASSIGN_OPERATOR + s.value() + NEWLINE);
+            displayFunction.accept(s.key() + ASSIGN_OPERATOR + s.value());
         }
     }
 }
