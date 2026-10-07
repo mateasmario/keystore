@@ -13,8 +13,7 @@ public class RemoveCommand implements Command {
     private static final String ASSIGN_OPERATOR = "=";
     private static final String NEWLINE = "\n";
     private static final String USAGE_MESSAGE = """
-            Usage: 'keystore remove <key>'
-            """;
+            Usage: 'keystore remove <key>'""";
 
     private final FileService fileService;
 

@@ -12,8 +12,7 @@ public class HelpCommand implements Command {
             get             Gets a specific key from the keystore
             add             Adds a new key-value item to the keystore
             remove          Removes a key from the keystore
-            delete-file     Deletes the entire keystore file
-            """;
+            delete-file     Deletes the entire keystore file""";
 
     @Override
     public void execute(List<String> args, Consumer<String> displayFunction) {

@@ -10,8 +10,7 @@ import java.util.function.Consumer;
 
 public class AddCommand implements Command {
     private static final String USAGE_MESSAGE = """
-            Usage: 'keystore add <key> <value>'
-            """;
+            Usage: 'keystore add <key> <value>'""";
 
     private final FileService fileService;
 

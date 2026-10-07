@@ -10,8 +10,7 @@ import java.util.function.Consumer;
 public class CommandDispatcher implements Command {
     private static final String USAGE_MESSAGE = """
             Usage: 'keystore <command>'
-            Type 'keystore help' for more information
-            """;
+            Type 'keystore help' for more information""";
 
     private final Map<String, Command> subcommands = new HashMap<>();
 

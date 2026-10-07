@@ -12,8 +12,7 @@ public class GetCommand implements Command {
     private static final String ASSIGN_OPERATOR = "=";
     private static final String NEWLINE = "\n";
     private static final String USAGE_MESSAGE = """
-            Usage: 'keystore get <key>'
-            """;
+            Usage: 'keystore get <key>'""";
 
     private final FileService fileService;
 
