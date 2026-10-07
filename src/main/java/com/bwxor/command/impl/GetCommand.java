@@ -41,7 +41,7 @@ public class GetCommand implements Command {
         var keyOptional = secrets.stream().filter(e -> e.key().equals(args.get(0))).findAny();
 
         if (keyOptional.isPresent()) {
-            displayFunction.accept(keyOptional.get().key() + ASSIGN_OPERATOR + keyOptional.get().value() + NEWLINE);
+            displayFunction.accept(keyOptional.get().key() + ASSIGN_OPERATOR + keyOptional.get().value());
         } else {
             displayFunction.accept("Key does not exist in the keystore.");
         }
