@@ -12,6 +12,7 @@ public class HelpCommand implements Command {
             list            Lists all keys from the keystore
             get             Gets a specific key from the keystore
             add             Adds a new key-value item to the keystore
+            generate        Generates a secure value for a given key name
             remove          Removes a key from the keystore
             delete-file     Deletes the entire keystore file""";
 

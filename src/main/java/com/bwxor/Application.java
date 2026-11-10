@@ -16,6 +16,7 @@ public class Application {
         commandDispatcher.register("help", new HelpCommand());
         commandDispatcher.register("list", new ListCommand(fileService));
         commandDispatcher.register("add", new AddCommand(fileService));
+        commandDispatcher.register("generate", new GenerateCommand(fileService));
         commandDispatcher.register("get", new GetCommand(fileService));
         commandDispatcher.register("remove", new RemoveCommand(fileService));
         commandDispatcher.register("delete-file", new DeleteFileCommand(fileService));
