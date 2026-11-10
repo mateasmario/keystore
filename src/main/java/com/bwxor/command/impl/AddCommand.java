@@ -4,7 +4,12 @@ import com.bwxor.command.Command;
 import com.bwxor.entity.Secret;
 import com.bwxor.exception.FileServiceException;
 import com.bwxor.service.FileService;
+import com.bwxor.type.Mode;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -25,14 +30,40 @@ public class AddCommand implements Command {
             return;
         }
 
-        char[] password = System.console().readPassword("Password: ");
+        Mode mode = Mode.UNKNOWN;
+        try {
+            mode = fileService.readModeFromFile();
+        } catch (FileServiceException e) {
+            displayFunction.accept("Error while reading mode file.");
+        }
 
-        List<Secret> secrets;
+        while (mode.equals(Mode.UNKNOWN)) {
+            String modeInput = System.console().readLine("Mode (KEYBOARD/FILE): ");
+            mode = Mode.parse(modeInput.trim().toUpperCase());
+        }
+
+        char[] password = null;
+
+        Path keyPath = null;
+
+
+        List<Secret> secrets = List.of();
 
         try {
-            secrets = fileService.getSecrets(new String(password));
-        } catch (FileServiceException e) {
-            displayFunction.accept("Could not read secrets from the file.");
+            if (mode.equals(Mode.KEYBOARD)) {
+                password = System.console().readPassword("Password: ");
+                secrets = fileService.getSecrets(new String(password));
+            } else if (mode.equals(Mode.FILE)) {
+                keyPath = Paths.get(System.console().readLine("File path: "));
+
+                if (!Files.exists(keyPath)) {
+                    displayFunction.accept("File path does not exist. One will be created for you.");
+                    password = System.console().readPassword("Password to derive key from: ");
+                }
+                secrets = fileService.getSecrets(keyPath);
+            }
+        } catch(FileServiceException e) {
+            displayFunction.accept("Could not read secrets from file.");
             return;
         }
 
@@ -41,12 +72,16 @@ public class AddCommand implements Command {
             return;
         }
 
-        List<Secret> newSecrets = new ArrayList<>();
-        newSecrets.addAll(secrets);
+        List<Secret> newSecrets = new ArrayList<>(secrets);
         newSecrets.add(new Secret(args.get(0), args.get(1)));
 
         try {
-            fileService.createSecretsFile(new String(password), newSecrets);
+            if (mode.equals(Mode.KEYBOARD)) {
+                fileService.createSecretsFile(new String(password), newSecrets);
+            }
+            else if (mode.equals(Mode.FILE)) {
+                fileService.createSecretsFile(new String(password), keyPath, newSecrets);
+            }
         } catch (FileServiceException e) {
             displayFunction.accept("Error while (re-)creating the keystore file.");
         }

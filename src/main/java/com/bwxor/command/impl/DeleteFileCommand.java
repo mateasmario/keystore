@@ -1,11 +1,9 @@
 package com.bwxor.command.impl;
 
 import com.bwxor.command.Command;
-import com.bwxor.entity.Secret;
 import com.bwxor.exception.FileServiceException;
 import com.bwxor.service.FileService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -25,7 +23,8 @@ public class DeleteFileCommand implements Command {
 
         if (answer.equalsIgnoreCase("Y")) {
             try {
-                fileService.deleteFile();
+                fileService.deleteSecretsFile();
+                fileService.deleteModeFile();
                 displayFunction.accept("Successfully deleted the keystore file.");
             } catch (FileServiceException e) {
                 displayFunction.accept("Could not delete keystore file.");

@@ -4,7 +4,11 @@ import com.bwxor.command.Command;
 import com.bwxor.entity.Secret;
 import com.bwxor.exception.FileServiceException;
 import com.bwxor.service.FileService;
+import com.bwxor.type.Mode;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,17 +33,35 @@ public class ListCommand implements Command {
 
     @Override
     public void execute(List<String> args, Consumer<String> displayFunction) {
-        char[] password = System.console().readPassword("Password: ");
-
-        List<Secret> secrets;
-
+        Mode mode;
         try {
-            secrets = fileService.getSecrets(new String(password));
+            mode = fileService.readModeFromFile();
         } catch (FileServiceException e) {
-            displayFunction.accept("Could not read secrets from the file.");
+            displayFunction.accept("Could not read mode from the file. Delete the secrets file and re-create it.");
             return;
         }
 
+        List<Secret> secrets = null;
+
+        try {
+            if (mode.equals(Mode.KEYBOARD)) {
+                char[] password = System.console().readPassword("Password: ");
+                secrets = fileService.getSecrets(new String(password));
+            } else if (mode.equals(Mode.FILE)) {
+                Path keyPath = Paths.get(System.console().readLine("File path: "));
+
+                if (!Files.exists(keyPath)) {
+                    displayFunction.accept("File path does not exist.");
+                    return;
+                }
+
+                secrets = fileService.getSecrets(keyPath);
+            }
+        } catch (FileServiceException e) {
+            displayFunction.accept("Could not read secrets from the file.");
+        }
+
+        assert secrets != null;
         for (Secret s : secrets) {
             displayFunction.accept(s.key() + ASSIGN_OPERATOR + s.value());
         }
