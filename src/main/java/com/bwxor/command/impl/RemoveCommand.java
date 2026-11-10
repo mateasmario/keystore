@@ -57,7 +57,7 @@ public class RemoveCommand implements Command {
                 }
 
                 secrets = fileService.getSecrets(keyPath);
-                fileService.createSecretsFile(keyPath, createSecretsListWithoutKeyToBeRemoved(secrets, args.get(0), displayFunction));
+                fileService.createSecretsFile(null, keyPath, createSecretsListWithoutKeyToBeRemoved(secrets, args.get(0), displayFunction));
             }
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read secrets from the file.");

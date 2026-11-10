@@ -33,23 +33,6 @@ public class FileService {
         this.vaultService = vaultService;
     }
 
-    public void createSecretsFile(Path keyPath, List<Secret> secrets) throws FileServiceException {
-        StringBuilder sb = new StringBuilder();
-
-        for (Secret s : secrets) {
-            sb.append(s.key()).append(ASSIGN_OPERATOR).append(s.value()).append(NEWLINE);
-        }
-
-        try {
-            SecretKey key = new SecretKeySpec(Files.readAllBytes(keyPath), "AES");
-            doCreateSecretsFile(vaultService.encrypt(sb.toString(), key));
-        } catch (VaultServiceException e) {
-            throw new FileServiceException(e);
-        } catch (IOException e) {
-            throw new FileServiceException(e);
-        }
-    }
-
     public void createSecretsFile(String password, Path keyPath, List<Secret> secrets) throws FileServiceException {
 
         StringBuilder sb = new StringBuilder();
@@ -59,8 +42,14 @@ public class FileService {
         }
 
         try {
-            doCreateSecretsFile(vaultService.encrypt(sb.toString(), password.toCharArray(), keyPath));
-        } catch (VaultServiceException e) {
+            if (password == null) {
+                SecretKey key = new SecretKeySpec(Files.readAllBytes(keyPath), "AES");
+                doCreateSecretsFile(vaultService.encrypt(sb.toString(), key, null));
+            }
+            else {
+                doCreateSecretsFile(vaultService.encrypt(sb.toString(), password.toCharArray(), keyPath));
+            }
+        } catch (VaultServiceException | IOException e) {
             throw new FileServiceException(e);
         }
     }
@@ -107,6 +96,10 @@ public class FileService {
     }
 
     public List<Secret> getSecrets(Path keyPath) throws FileServiceException {
+        if (Files.notExists(SECRETS_FILE_PATH)) {
+            return List.of();
+        }
+
         try {
             return collectSecrets(vaultService.decrypt(readSecretsEncrypted(), keyPath));
         } catch (VaultServiceException e) {

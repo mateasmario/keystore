@@ -38,15 +38,54 @@ public class VaultService {
     }
 
     /**
-     * Encrypts the plaintext using directly the key
+     * Encrypts the plaintext and creates a file containing the key
      * @param plaintext Plaintext to encrypt
-     * @param key Key to be used for encryption
+     * @param password Password to be used for deriving the key
+     * @param keyPath Path where the key file should be created, if not null
      * @return Encrypted text
      */
-    public byte[] encrypt(String plaintext, SecretKey key) throws VaultServiceException {
+    public byte[] encrypt(String plaintext, char[] password, Path keyPath) throws VaultServiceException {
         byte[] salt = new byte[SALT_LEN];
         byte[] nonce = new byte[NONCE_LEN];
         RNG.nextBytes(salt);
+        RNG.nextBytes(nonce);
+
+        SecretKey key;
+
+        try {
+            key = deriveKey(password, salt);
+        } catch (Exception e) {
+            throw new VaultServiceException(e);
+        }
+
+        // Write to file, if needed
+        if (keyPath != null) {
+            try {
+                Files.deleteIfExists(keyPath);
+                Files.createFile(keyPath);
+                Files.write(keyPath, key.getEncoded());
+            } catch (IOException e) {
+                throw new VaultServiceException(e);
+            }
+        }
+
+        return encrypt(plaintext, key, salt);
+    }
+
+    /**
+     * Encrypts the plaintext using directly the key
+     * @param plaintext Plaintext to encrypt
+     * @param key Key to be used for encryption
+     * @param salt Salt, if the method has been called by an overload. Can be null.
+     * @return Encrypted text
+     */
+    public byte[] encrypt(String plaintext, SecretKey key, byte[] salt) throws VaultServiceException {
+        if (salt == null) {
+            salt = new byte[SALT_LEN];
+            RNG.nextBytes(salt);
+        }
+
+        byte[] nonce = new byte[NONCE_LEN];
         RNG.nextBytes(nonce);
 
         Cipher cipher;
@@ -80,41 +119,6 @@ public class VaultService {
     }
 
     /**
-     * Encrypts the plaintext and creates a file containing the key
-     * @param plaintext Plaintext to encrypt
-     * @param password Password to be used for deriving the key
-     * @param keyPath Path where the key file should be created, if not null
-     * @return Encrypted text
-     */
-    public byte[] encrypt(String plaintext, char[] password, Path keyPath) throws VaultServiceException {
-        byte[] salt = new byte[SALT_LEN];
-        byte[] nonce = new byte[NONCE_LEN];
-        RNG.nextBytes(salt);
-        RNG.nextBytes(nonce);
-
-        SecretKey key;
-
-        try {
-            key = deriveKey(password, salt);
-        } catch (Exception e) {
-            throw new VaultServiceException(e);
-        }
-
-        // Write to file, if needed
-        if (keyPath != null) {
-            try {
-                Files.deleteIfExists(keyPath);
-                Files.createFile(keyPath);
-                Files.write(keyPath, key.getEncoded());
-            } catch (IOException e) {
-                throw new VaultServiceException(e);
-            }
-        }
-
-        return encrypt(plaintext, key);
-    }
-
-    /**
      * Creates a key hash to be used for encryption
      */
     private SecretKey deriveKey(char[] password, byte[] salt) throws VaultServiceException {
@@ -144,6 +148,9 @@ public class VaultService {
 
         try {
             byte[] bytes = Files.readAllBytes(keyPath);
+            if (bytes.length == 0) {
+                throw new VaultServiceException("Key is empty.");
+            }
             key = new SecretKeySpec(bytes, "AES");
         } catch (IOException e) {
             throw new VaultServiceException(e);

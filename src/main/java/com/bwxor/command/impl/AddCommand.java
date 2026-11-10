@@ -85,6 +85,7 @@ public class AddCommand implements Command {
             fileService.createModeFile(mode);
         } catch (FileServiceException e) {
             displayFunction.accept("Error while (re-)creating the keystore file.");
+            return;
         }
 
         displayFunction.accept("Key " + args.get(0) + " has been added to the keystore.");

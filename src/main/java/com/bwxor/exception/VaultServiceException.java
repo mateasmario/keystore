@@ -4,4 +4,8 @@ public class VaultServiceException extends Exception {
     public VaultServiceException(Throwable cause) {
         super(cause);
     }
+
+    public VaultServiceException(String message) {
+        super(message);
+    }
 }

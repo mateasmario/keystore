@@ -57,6 +57,7 @@ public class GetCommand implements Command {
             }
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read secrets from the file.");
+            return;
         }
 
         var keyOptional = secrets.stream().filter(e -> e.key().equals(args.get(0))).findAny();
