@@ -115,6 +115,10 @@ public class FileService {
     }
 
     public List<Secret> getSecrets(String password) throws FileServiceException {
+        if (Files.notExists(SECRETS_FILE_PATH)) {
+            return List.of();
+        }
+
         try {
             return collectSecrets(vaultService.decrypt(readSecretsEncrypted(), password.toCharArray()));
         } catch (VaultServiceException e) {
@@ -145,12 +149,6 @@ public class FileService {
     }
 
     private byte[] readSecretsEncrypted() throws FileServiceException {
-        if (!Files.exists(SECRETS_FILE_PATH)) {
-            return new byte[0];
-        }
-
-        byte[] data;
-
         try {
             return Files.readAllBytes(SECRETS_FILE_PATH);
         } catch (IOException e) {
@@ -178,7 +176,7 @@ public class FileService {
         return Mode.parse(mode);
     }
 
-    public void writeModeToFile(Mode mode) throws FileServiceException {
+    public void createModeFile(Mode mode) throws FileServiceException {
         try {
             Files.deleteIfExists(MODE_FILE_PATH);
             Files.createFile(MODE_FILE_PATH);

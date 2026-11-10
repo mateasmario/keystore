@@ -34,7 +34,7 @@ public class AddCommand implements Command {
         try {
             mode = fileService.readModeFromFile();
         } catch (FileServiceException e) {
-            displayFunction.accept("Error while reading mode file.");
+            displayFunction.accept("Mode file does not exist yet.");
         }
 
         while (mode.equals(Mode.UNKNOWN)) {
@@ -82,6 +82,7 @@ public class AddCommand implements Command {
             else if (mode.equals(Mode.FILE)) {
                 fileService.createSecretsFile(new String(password), keyPath, newSecrets);
             }
+            fileService.createModeFile(mode);
         } catch (FileServiceException e) {
             displayFunction.accept("Error while (re-)creating the keystore file.");
         }

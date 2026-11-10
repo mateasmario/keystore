@@ -36,6 +36,8 @@ public class ListCommand implements Command {
         Mode mode;
         try {
             mode = fileService.readModeFromFile();
+            // todo remove
+            displayFunction.accept("Mode: " + mode.getValue());
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read mode from the file. Delete the secrets file and re-create it.");
             return;
