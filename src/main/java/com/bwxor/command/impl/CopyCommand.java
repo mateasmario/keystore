@@ -66,6 +66,7 @@ public class CopyCommand implements Command {
             Toolkit.getDefaultToolkit()
                     .getSystemClipboard()
                     .setContents(new StringSelection(keyOptional.get().value()), null);
+            displayFunction.accept("Key " + keyOptional.get().key() + " has been copied to the clipboard.");
         } else {
             displayFunction.accept("Key does not exist in the keystore.");
         }

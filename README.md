@@ -112,6 +112,16 @@ keystore remove <key>
 keystore remove api_key
 ```
 
+### Update
+Updates the value of an existing key in the keystore. Prompts for password:
+```bash
+keystore update <key> <newvalue>
+```
+**Example:**
+```bash
+keystore update api_key "newsecret456"
+```
+
 ### Delete Keystore File
 Deletes the entire keystore file:
 ```bash

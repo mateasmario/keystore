@@ -14,6 +14,7 @@ public class HelpCommand extends CommandDispatcher {
             add                 Adds a new key-value item to the keystore
             generate            Generates a secure value for a given key name
             remove              Removes a key from the keystore
+            update              Updates the value of an existing key in the keystore
             delete-keystore     Deletes the entire keystore file""";
 
 
