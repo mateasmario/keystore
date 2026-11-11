@@ -24,29 +24,32 @@ A command-line application for securely storing and managing key-value pairs wit
 
 ### Build Steps
 
-1. Build the project and create a fat JAR:
-   ```bash
-   mvn package
-   ```
-
-2. (Optional) Create a native application image using jpackage:
-   ```bash
-   jpackage --type app-image --name keystore --input target --main-jar keystore.jar --main-class com.bwxor.Application --win-console --java-options "--enable-native-access=ALL-UNNAMED" --dest dist
-   ```
+Run `mvn package`. This creates a fat JAR in `target/` and, via jpackage (run as part of the `package` phase), an executable application under `dist/`.
 
 ## Commands
 
 ### Help
-Displays all available commands:
+Displays all available commands. Use `help <command>` for details about a specific command:
 ```bash
 keystore help
+keystore help <command>
+```
+
+### Mode
+Displays the current mode (KEYBOARD/FILE):
+```bash
+keystore mode
 ```
 
 ### List
 Lists all stored key-value pairs. Prompts for password:
 ```bash
-keystore list
+keystore list [options]
 ```
+
+| Option | Description |
+|--------|-------------|
+| `-s`, `--silent` | List only the keys, without their values |
 
 ### Add
 Adds a new key-value pair to the keystore. Prompts for password:
@@ -58,6 +61,27 @@ keystore add <key> <value>
 keystore add api_key "secret123"
 ```
 
+### Generate
+Generates a random value and stores it under a new key. Prompts for password:
+```bash
+keystore generate <key> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-len <n>`, `--length <n>` | Value length (minimum 4, default 16) |
+| `-d`, `--digits` | Include digits (0-9) |
+| `-u`, `--uppercase` | Include uppercase letters (A-Z) |
+| `-l`, `--lowercase` | Include lowercase letters (a-z) |
+| `-s`, `--symbols` | Include symbols |
+
+If no character type is given, all types are used. If one or more are given, only those are used.
+
+**Example:**
+```bash
+keystore generate github --length 24 --digits --lowercase
+```
+
 ### Get
 Retrieves a specific key from the keystore. Prompts for password:
 ```bash
@@ -66,6 +90,16 @@ keystore get <key>
 **Example:**
 ```bash
 keystore get api_key
+```
+
+### Copy
+Copies the value of a specific key to the clipboard. Prompts for password:
+```bash
+keystore copy <key>
+```
+**Example:**
+```bash
+keystore copy api_key
 ```
 
 ### Remove

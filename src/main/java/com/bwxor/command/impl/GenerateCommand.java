@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class GenerateCommand implements Command {
-    record Modifiers(int length, boolean uppercase, boolean lowercase, boolean digits, boolean symbols) { }
+    record Modifiers(int length, boolean digits, boolean uppercase, boolean lowercase, boolean symbols) { }
 
     private static final int DEFAULT_LENGTH = 16;
 
@@ -142,6 +142,8 @@ public class GenerateCommand implements Command {
                             } catch (NumberFormatException e) {
                                 throw new GenerateModifiersProcessingException("Number expected after -len (--length) modifier.");
                             }
+                        } else {
+                            throw new GenerateModifiersProcessingException("Number expected after -len (--length) modifier.");
                         }
                     }
                     case DIGITS -> digits = true;
