@@ -15,6 +15,7 @@ public class HelpCommand extends CommandDispatcher {
             generate            Generates a secure value for a given key name
             remove              Removes a key from the keystore
             update              Updates the value of an existing key in the keystore
+            otp                 Generates a one-time password (changes every 30 seconds) from a key
             delete-keystore     Deletes the entire keystore file""";
 
 

@@ -122,6 +122,16 @@ keystore update <key> <newValue>
 keystore update api_key newsecret456
 ```
 
+### OTP
+Generates a one-time password (6 digits, TOTP) from a stored key. The code changes every 30 seconds, and the command shows how long the current code is valid. The key's value should be a base32 secret, such as the one shown when setting up two-factor authentication; if it is not valid base32, its raw text is used as the secret. Prompts for password:
+```bash
+keystore otp <key>
+```
+**Example:**
+```bash
+keystore otp github_2fa
+```
+
 ### Delete Keystore File
 Deletes the entire keystore file:
 ```bash

@@ -33,6 +33,7 @@ public class Application {
         keystoreCommand.register("copy", new CopyCommand(fileService));
         keystoreCommand.register("remove", new RemoveCommand(fileService));
         keystoreCommand.register("update", new UpdateCommand(fileService));
+        keystoreCommand.register("otp", new OtpCommand(fileService));
         keystoreCommand.register("delete-keystore", new DeleteFileCommand(fileService));
         keystoreCommand.register("mode", new ModeCommand(fileService));
 
