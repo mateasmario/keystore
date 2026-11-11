@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class AddCommand implements Command {
     private static final String USAGE_MESSAGE = """
-            Usage: 'keystore add <key> <value>'""";
+            Usage: keystore add <key> <value>""";
 
     private final FileService fileService;
 
@@ -34,12 +34,12 @@ public class AddCommand implements Command {
         try {
             mode = fileService.readModeFromFile();
         } catch (FileServiceException e) {
-            displayFunction.accept("Mode file does not exist yet.");
+            displayFunction.accept("Mode file does not exist yet. It will be created for you.");
         }
 
         while (mode.equals(Mode.UNKNOWN)) {
             String modeInput = System.console().readLine("Mode (KEYBOARD/FILE): ");
-            mode = Mode.parse(modeInput.trim().toUpperCase());
+            mode = Mode.parse(modeInput.trim());
         }
 
         char[] password = null;
@@ -63,7 +63,7 @@ public class AddCommand implements Command {
                 secrets = fileService.getSecrets(keyPath);
             }
         } catch(FileServiceException e) {
-            displayFunction.accept("Could not read secrets from file.");
+            displayFunction.accept("Could not read secrets from the file. Invalid password, maybe?");
             return;
         }
 

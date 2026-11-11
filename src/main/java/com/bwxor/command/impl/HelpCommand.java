@@ -1,23 +1,24 @@
 package com.bwxor.command.impl;
 
-import com.bwxor.command.Command;
+import com.bwxor.command.CommandDispatcher;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class HelpCommand implements Command {
+public class HelpCommand extends CommandDispatcher {
     private static final String HELP_MESSAGE = """
-            help            Displays all available commands
-            mode            Displays the current mode (KEYBOARD/FILE)
-            list            Lists all keys from the keystore
-            get             Gets a specific key from the keystore
-            add             Adds a new key-value item to the keystore
-            generate        Generates a secure value for a given key name
-            remove          Removes a key from the keystore
-            delete-file     Deletes the entire keystore file""";
+            help                Displays all available commands
+            mode                Displays the current mode (KEYBOARD/FILE)
+            list                Lists all keys from the keystore
+            get                 Gets a specific key from the keystore
+            copy                Copies a specific value to the clipboard
+            add                 Adds a new key-value item to the keystore
+            generate            Generates a secure value for a given key name
+            remove              Removes a key from the keystore
+            delete-keystore     Deletes the entire keystore file""";
+
 
     @Override
-    public void execute(List<String> args, Consumer<String> displayFunction) {
+    public void processDefaultMessage(Consumer<String> displayFunction) {
         displayFunction.accept(HELP_MESSAGE);
     }
 }

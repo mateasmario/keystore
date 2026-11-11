@@ -3,28 +3,43 @@ package com.bwxor.generator;
 import java.security.SecureRandom;
 
 public class PasswordGenerator {
-    private static final int LENGTH = 16;
+    private static final String EMPTY_STRING = "";
     private static final String UPPER   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER   = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS  = "0123456789";
     private static final String SYMBOLS = "!@#$%^&*()-_=+[]{};:,.<>?";
-    private static final String ALL = UPPER + LOWER + DIGITS + SYMBOLS;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    public static String generate() {
-        char[] password = new char[LENGTH];
+    public String generate(int length, boolean digits, boolean uppercase, boolean lowercase, boolean symbols) {
+        String ALL = EMPTY_STRING;
 
-        password[0] = pick(UPPER);
-        password[1] = pick(LOWER);
-        password[2] = pick(DIGITS);
-        password[3] = pick(SYMBOLS);
+        int curr = 0;
 
-        for (int i = 4; i < LENGTH; i++) {
+        char[] password = new char[length];
+
+        if (digits) {
+            ALL += DIGITS;
+            password[curr++] = pick(DIGITS);
+        }
+        if (uppercase) {
+            ALL += UPPER;
+            password[curr++] = pick(UPPER);
+        }
+        if (lowercase) {
+            ALL += LOWER;
+            password[curr++] = pick(LOWER);
+        }
+        if (symbols) {
+            ALL += SYMBOLS;
+            password[curr++] = pick(SYMBOLS);
+        }
+
+        for (int i = curr; i < length; i++) {
             password[i] = pick(ALL);
         }
 
-        for (int i = LENGTH - 1; i > 0; i--) {
+        for (int i = length - 1; i > 0; i--) {
             int j = RANDOM.nextInt(i + 1);
             char tmp = password[i];
             password[i] = password[j];

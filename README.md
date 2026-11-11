@@ -78,9 +78,9 @@ keystore remove <key>
 keystore remove api_key
 ```
 
-### Delete File
+### Delete Keystore File
 Deletes the entire keystore file:
 ```bash
-keystore delete-file
+keystore delete-keystore
 ```
 **Note:** Use with caution - this permanently deletes all stored secrets.

@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class RemoveCommand implements Command {
-    private static final String ASSIGN_OPERATOR = "=";
-    private static final String NEWLINE = "\n";
     private static final String USAGE_MESSAGE = """
-            Usage: 'keystore remove <key>'""";
+            Usage: keystore remove <key>""";
 
     private final FileService fileService;
 
@@ -60,10 +58,11 @@ public class RemoveCommand implements Command {
                 fileService.createSecretsFile(null, keyPath, createSecretsListWithoutKeyToBeRemoved(secrets, args.get(0), displayFunction));
             }
         } catch (FileServiceException e) {
-            displayFunction.accept("Could not read secrets from the file.");
+            displayFunction.accept("Could not read secrets from the file. Invalid password, maybe?");
+            return;
         }
 
-        displayFunction.accept("Key " + args.get(0) + " has been added to the keystore.");
+        displayFunction.accept("Key " + args.get(0) + " has been removed from the keystore.");
     }
 
     private List<Secret> createSecretsListWithoutKeyToBeRemoved(List<Secret> secrets, String key, Consumer<String> displayFunction) {

@@ -1,5 +1,7 @@
 package com.bwxor.type;
 
+import java.util.Locale;
+
 public enum Mode {
     KEYBOARD("KEYBOARD"), FILE("FILE"), UNKNOWN("UNKNOWN");
     final String value;
@@ -14,13 +16,13 @@ public enum Mode {
 
     public static Mode parse(String value) {
         for(Mode m : values()) {
-            if (m.value.equals(value)) {
+            if (m.value.equalsIgnoreCase(value)) {
                 return m;
             }
         }
 
         for (Mode m : values()) {
-            if (m.value.startsWith(value)) {
+            if (m.value.toLowerCase(Locale.ROOT).startsWith(value.toLowerCase(Locale.ROOT))) {
                 return m;
             }
         }

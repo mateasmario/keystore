@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 public class ListCommand implements Command {
     private static final String ASSIGN_OPERATOR = "=";
-    private static final String NEWLINE = "\n";
+    private static final String EMPTY_STRING = "";
     private final Map<String, Command> subcommands = new HashMap<>();
 
     private final FileService fileService;
@@ -26,13 +26,10 @@ public class ListCommand implements Command {
         this.fileService = fileService;
     }
 
-    public ListCommand register(String name, Command command) {
-        subcommands.put(name, command);
-        return this;
-    }
-
     @Override
     public void execute(List<String> args, Consumer<String> displayFunction) {
+        boolean silent = !args.isEmpty() && (args.getFirst().equalsIgnoreCase("-s") || args.getFirst().equalsIgnoreCase("--silent"));
+
         Mode mode;
         try {
             mode = fileService.readModeFromFile();
@@ -58,13 +55,13 @@ public class ListCommand implements Command {
                 secrets = fileService.getSecrets(keyPath);
             }
         } catch (FileServiceException e) {
-            displayFunction.accept("Could not read secrets from the file.");
+            displayFunction.accept("Could not read secrets from the file. Invalid password, maybe?");
             return;
         }
 
         assert secrets != null;
         for (Secret s : secrets) {
-            displayFunction.accept(s.key() + ASSIGN_OPERATOR + s.value());
+            displayFunction.accept(s.key() + (!silent ? (ASSIGN_OPERATOR + s.value()) : EMPTY_STRING));
         }
     }
 }

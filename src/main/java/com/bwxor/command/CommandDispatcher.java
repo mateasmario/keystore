@@ -1,18 +1,13 @@
-package com.bwxor.command.impl;
-
-import com.bwxor.command.Command;
+package com.bwxor.command;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class CommandDispatcher implements Command {
-    private static final String USAGE_MESSAGE = """
-            Usage: 'keystore <command>'
-            Type 'keystore help' for more information""";
-
-    private final Map<String, Command> subcommands = new HashMap<>();
+public abstract class CommandDispatcher implements Command {
+    protected final Map<String, Command> subcommands = new HashMap<>();
 
     public CommandDispatcher register(String name, Command command) {
         subcommands.put(name, command);
@@ -22,16 +17,18 @@ public class CommandDispatcher implements Command {
     @Override
     public void execute(List<String> args, Consumer<String> displayFunction) {
         if (args.isEmpty()) {
-            System.out.println(USAGE_MESSAGE);
+            processDefaultMessage(displayFunction);
             return;
         }
 
-        Command command = subcommands.get(args.get(0));
+        Command command = subcommands.get(args.getFirst().toLowerCase(Locale.ROOT));
         if (command == null) {
-            System.out.println("Unknown command: " + args.get(0));
+            displayFunction.accept("Unknown command: " + args.getFirst().toLowerCase(Locale.ROOT));
             return;
         }
 
         command.execute(args.subList(1, args.size()), displayFunction);   // pass the rest down
     }
+
+    public abstract void processDefaultMessage(Consumer<String> displayFunction);
 }
