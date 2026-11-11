@@ -58,7 +58,7 @@ keystore add <key> <value>
 ```
 **Example:**
 ```bash
-keystore add api_key "secret123"
+keystore add api_key secret123
 ```
 
 ### Generate
@@ -115,11 +115,11 @@ keystore remove api_key
 ### Update
 Updates the value of an existing key in the keystore. Prompts for password:
 ```bash
-keystore update <key> <newvalue>
+keystore update <key> <newValue>
 ```
 **Example:**
 ```bash
-keystore update api_key "newsecret456"
+keystore update api_key newsecret456
 ```
 
 ### Delete Keystore File
