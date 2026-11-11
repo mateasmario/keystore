@@ -59,10 +59,7 @@ public class RemoveCommand implements Command {
             }
         } catch (FileServiceException e) {
             displayFunction.accept("Could not read secrets from the file. Invalid password, maybe?");
-            return;
         }
-
-        displayFunction.accept("Key " + args.get(0) + " has been removed from the keystore.");
     }
 
     private List<Secret> createSecretsListWithoutKeyToBeRemoved(List<Secret> secrets, String key, Consumer<String> displayFunction) {
