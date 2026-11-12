@@ -21,6 +21,7 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>6.1.3</junit.version>
+        <jpackage.platform.option>--verbose</jpackage.platform.option>
     </properties>
 
     <build>
@@ -120,7 +121,7 @@
                                 <argument>keystore.jar</argument>
                                 <argument>--main-class</argument>
                                 <argument>com.bwxor.Application</argument>
-                                <argument>--win-console</argument>
+                                <argument>${jpackage.platform.option}</argument>
                                 <argument>--java-options</argument>
                                 <argument>--enable-native-access=ALL-UNNAMED</argument>
                                 <argument>--dest</argument>
@@ -137,6 +138,20 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <jpackage.platform.option>--win-console</jpackage.platform.option>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
