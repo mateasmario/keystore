@@ -1,0 +1,64 @@
+name: Build and release keystore
+
+on:
+  push:
+
+permissions:
+  contents: write   # needed to upload release assets
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'   # change to your project's Java version
+          cache: maven
+
+      - name: Build
+        run: mvn clean install
+
+      - name: Zip dist/keystore
+        shell: pwsh
+        run: Compress-Archive -Path dist/keystore -DestinationPath keystore_windows.zip -Force
+
+      - name: Upload to latest release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Use the latest release; create one if the repo has none yet
+          TAG=$(gh release view --json tagName -q .tagName 2>/dev/null || true)
+          if [ -z "$TAG" ]; then
+            TAG=latest
+            gh release create "$TAG" --title "Latest build" --notes "Automated build"
+          fi
+          gh release upload "$TAG" keystore_windows.zip --clobber
+
+  build-linux:
+    needs: build-windows   # runs only after the Windows job succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build
+        run: mvn clean install
+
+      - name: Create tar.gz of dist/keystore
+        run: tar -czf keystore_linux.tar.gz -C dist keystore
+
+      - name: Upload to latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(gh release view --json tagName -q .tagName)
+          gh release upload "$TAG" keystore_linux.tar.gz --clobber
